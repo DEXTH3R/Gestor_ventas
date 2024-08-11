@@ -6,7 +6,10 @@ package Vista;
 
 import Modelo.Cliente;
 import Modelo.ClienteDAO;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -15,12 +18,40 @@ import javax.swing.JOptionPane;
 public class Sistema extends javax.swing.JFrame {
 
     Cliente cl = new Cliente();
-    ClienteDAO clDAO = new ClienteDAO();
-    
+    ClienteDAO clientDAO = new ClienteDAO();
+    DefaultTableModel Modelo = new DefaultTableModel();
     
     public Sistema() {
         initComponents();
         this.setLocationRelativeTo(null);
+    }
+    
+    public void ListarCliente() {
+        List<Cliente> ListarCl = clientDAO.ListarCliente();
+        Modelo = (DefaultTableModel) TableCliente.getModel();
+        Object[] ob = new Object[6];
+        
+        for (int i = 0; i < ListarCl.size(); i++) {
+            
+            ob[0] = ListarCl.get(i).getID();
+            ob[1] = ListarCl.get(i).getCif();
+            ob[2] = ListarCl.get(i).getNombre();
+            ob[3] = ListarCl.get(i).getTelefono();
+            ob[4] = ListarCl.get(i).getDireccion();
+            ob[5] = ListarCl.get(i).getRazon();
+            
+            Modelo.addRow(ob);
+        }
+        
+        TableCliente.setModel(Modelo);
+    
+    }
+    
+    public void LimpiarTable() {
+        for (int i = 0; i < Modelo.getRowCount(); i++ ) {
+            Modelo.removeRow(i);
+            i--;
+        }
     }
 
     /**
@@ -468,16 +499,17 @@ public class Sistema extends javax.swing.JFrame {
 
             },
             new String [] {
-                "CIF", "NOMBRE", "TELEFONO", "DIRECCIÒN", "RAZÒN SOCIAL"
+                "ID", "CIF", "NOMBRE", "TELEFONO", "DIRECCIÒN", "RAZÒN SOCIAL"
             }
         ));
         jScrollPane2.setViewportView(TableCliente);
         if (TableCliente.getColumnModel().getColumnCount() > 0) {
-            TableCliente.getColumnModel().getColumn(0).setPreferredWidth(50);
-            TableCliente.getColumnModel().getColumn(1).setPreferredWidth(100);
-            TableCliente.getColumnModel().getColumn(2).setPreferredWidth(50);
-            TableCliente.getColumnModel().getColumn(3).setPreferredWidth(80);
-            TableCliente.getColumnModel().getColumn(4).setPreferredWidth(80);
+            TableCliente.getColumnModel().getColumn(0).setPreferredWidth(10);
+            TableCliente.getColumnModel().getColumn(1).setPreferredWidth(50);
+            TableCliente.getColumnModel().getColumn(2).setPreferredWidth(85);
+            TableCliente.getColumnModel().getColumn(3).setPreferredWidth(50);
+            TableCliente.getColumnModel().getColumn(4).setPreferredWidth(85);
+            TableCliente.getColumnModel().getColumn(5).setPreferredWidth(80);
         }
 
         btnGuardarCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/GuardarTodo.png"))); // NOI18N
@@ -542,13 +574,14 @@ public class Sistema extends javax.swing.JFrame {
                             .addComponent(txtRazonCliente)
                             .addComponent(txtCifCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(39, 39, 39)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
                         .addComponent(txtIDCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addContainerGap(658, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1053,6 +1086,9 @@ public class Sistema extends javax.swing.JFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
+        LimpiarTable();
+        ListarCliente();
+        jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void txtDescripcionVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDescripcionVentaActionPerformed
@@ -1141,7 +1177,7 @@ public class Sistema extends javax.swing.JFrame {
             cl.setDireccion(txtDireccionCliente.getText());
             cl.setRazon(txtRazonCliente.getText());
             
-            clDAO.RegistrarCliente(cl);
+            clientDAO.RegistrarCliente(cl);
             JOptionPane.showMessageDialog(null,"Cliente Registrado");            
         }else{
             JOptionPane.showMessageDialog(null,"Los campos están vacios");
