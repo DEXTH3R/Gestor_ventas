@@ -6,6 +6,7 @@ package Vista;
 
 import Modelo.login;
 import Modelo.LoginDAO;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -35,6 +36,8 @@ public class Login1 extends javax.swing.JFrame {
                 Sistema sis = new Sistema();
                 sis.setVisible(true);
                 dispose();
+            }else {
+                JOptionPane.showMessageDialog(null, "Correo o Contraseña Incorrecta");
             }
         }
   
